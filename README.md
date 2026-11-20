@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShipYard
 
-## Getting Started
+A product-catalog storefront built with Next.js + TypeScript.
 
-First, run the development server:
+- **Live site:** https://devacharan-cu.github.io/shipyard/
+- **Lighthouse Performance: 98 (mobile)**, with Accessibility 100, Best Practices 100, SEO 100 ([PageSpeed Insights report](https://pagespeed.web.dev/analysis/https-devacharan-cu-github-io-shipyard/y4qcin6kil?form_factor=mobile))
+
+![Lighthouse mobile report: Performance 98, Accessibility 100, Best Practices 100, SEO 100](docs/lighthouse-mobile.jpg)
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To build the static site that gets deployed:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build   # writes the static export to out/ (served under /shipyard)
+```
 
-## Learn More
+## What it does
 
-To learn more about Next.js, take a look at the following resources:
+Browse a product grid and open a detail page for each product.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Catalog:** typed product data (`app/data/products.ts`), a reusable `ProductCard`, a responsive CSS-grid home page, and a dynamic `/products/[id]` route pre-built with `generateStaticParams`.
+- **Optimized:** `next/image` with explicit sizes (no layout shift), self-hosted Inter via `next/font`, a heavy Reviews panel lazy-loaded with `next/dynamic`, compressed WebP photos, and per-page metadata (`metadata` + `generateMetadata`).
+- **Resilient:** `app/loading.tsx`, `app/error.tsx` (with a retry button) and `app/not-found.tsx` for unknown products.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+Pushes are built and published to GitHub Pages by the GitHub Actions workflow in `.github/workflows/deploy.yml`. It runs `npm ci` and `npm run build`, then uploads the `out/` folder. `next.config.ts` uses `output: "export"`, `basePath: "/shipyard"` and `images: { unoptimized: true }` so the static site works under the repo path.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Lighthouse: measure → fix → re-measure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Run | Performance (mobile) | LCP | Top opportunity |
+| --- | --- | --- | --- |
+| Before | 93 | 3.2 s | Improve image delivery (est. 160 KiB) |
+| After converting photos to WebP | **98** | 2.3 s | Improve image delivery (est. 29 KiB) |
