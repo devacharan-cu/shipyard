@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "../data/products";
+import { asset } from "../lib/asset";
 
 type ProductCardProps = {
   product: Product;
@@ -17,7 +18,7 @@ export default function ProductCard({ product, eager = false }: ProductCardProps
           the exact 4:3 box up front so nothing below it shifts (no CLS). */}
       <div className="card-art" style={{ background: product.accent }}>
         <Image
-          src={product.image}
+          src={asset(product.image)}
           alt={product.name}
           width={800}
           height={600}

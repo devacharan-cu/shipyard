@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct, products } from "../../data/products";
+import { asset } from "../../lib/asset";
 import LazyReviews from "./LazyReviews";
 
 // In Next.js 15+, route params are passed as a Promise, so we await them.
@@ -50,9 +51,11 @@ export default async function ProductPage(props: PageProps) {
 
       <article className="detail">
         <div className="detail-art" style={{ background: product.accent }}>
-          {/* The main photo is the Largest Contentful Paint, so preload it. */}
+          {/* The main photo is the Largest Contentful Paint, so load it eagerly
+              and preload it. (`preload` is Next.js 16's name for the old
+              `priority` prop, which is now deprecated.) Only this image gets it. */}
           <Image
-            src={product.image}
+            src={asset(product.image)}
             alt={product.name}
             width={800}
             height={600}
