@@ -1,6 +1,14 @@
 // app/page.tsx
+import type { Metadata } from "next";
 import ProductCard from "./components/ProductCard";
 import { products } from "./data/products";
+
+// Fixed text, so a static metadata object is enough for the home page.
+export const metadata: Metadata = {
+  title: "ShipYard: Gear for builders, runners, and explorers",
+  description:
+    "Browse sneakers, audio, wearables, and gadgets in the ShipYard catalog.",
+};
 
 export default function HomePage() {
   return (
@@ -18,8 +26,12 @@ export default function HomePage() {
 
         {/* One card per product, straight from the data. */}
         <div className="grid">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, index) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              eager={index < 4}
+            />
           ))}
         </div>
       </section>
